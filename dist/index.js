@@ -28,12 +28,12 @@ Object.defineProperty(exports, 'Store', {
   }
 });
 
-var _lazy = require('./components/lazy');
+var _container = require('./data/container');
 
-Object.defineProperty(exports, 'LazyContainer', {
+Object.defineProperty(exports, 'dataContainer', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_lazy).default;
+    return _interopRequireDefault(_container).default;
   }
 });
 

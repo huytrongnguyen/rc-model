@@ -5,15 +5,13 @@
 [![npm download](https://img.shields.io/npm/dm/rc-model.svg?style=flat-square)](https://npmjs.org/package/rc-model)
 [![npm license](https://img.shields.io/npm/l/rc-model.svg)](https://npmjs.org/package/rc-model)
 
-A JAVASCRIPT LIBRARY FOR BUILDING DATA-DRIVEN REACT APPLICATIONS (UNDER CONSTRUCTION)
+A JAVASCRIPT LIBRARY FOR BUILDING DATA-DRIVEN REACT APPLICATIONS
 
 As we know, React has no networking/AJAX features. You can see this article: [http://andrewhfarmer.com/react-ajax-best-practices/](http://andrewhfarmer.com/react-ajax-best-practices/)
 I like Relay but it only works with GraphQL. Then I make a small library based on Relay concept and mix it with Container Components and it works with RESTful backends.
 
 ![Alt](http://andrewhfarmer.com/react-ajax-best-practices/img/container-components.png "Container Components")
 ![Alt](http://andrewhfarmer.com/react-ajax-best-practices/img/relay.png "Relay")
-
-This library is separated with rc-lazy to convert LazyContainer to decorator and only support for data-driven
 
 It doesn't violate "separation of concerns" design principle since we do not have any real AJAX request in presentation component. Every AJAX request lives in container component called LazyContainer.
 The response data will be pushed into the state so that UI can change whenever state change.
@@ -26,15 +24,18 @@ You'll need both React and React Lazy:
 
 ## Containers
 
-Create a React component extends from LazyContainer:
+Create a React component with dataContainer decorator:
 
 ```javascript
-import React from 'react'
-import { LazyContainer, MutationType, Store } from 'rc-lazy'
+import React, { Component } from 'react'
+import { dataContainer, MutationType, Store } from 'rc-model'
 
 Store.BASE_URL = '/api'
 
-class MyComponent extends LazyContainer {
+@dataContainer({
+  endpoint: 'system'
+})
+class MyComponent extends Component {
   constructor(props) {
     super(props)
     this.state = { TestData: [] }
@@ -48,21 +49,17 @@ class MyComponent extends LazyContainer {
   }
 }
 
-MyComponent.defaultProps = {
-  endpoint: 'system'
-}
-
 export default MyComponent
 ```
 
 You can setup network layer throught Store.BASE_URL. In this case, when you setup ```Store.BASE_URL = '/api'```, every AJAX requests will call to ```http://<IP Server>:<Port>/api/```
 
-You need to setup the endpoint to make an AJAX request to ```http://<IP Server>:<Port>/api/<endpoint>``` throught defaultProps:
+You need to setup the endpoint to make an AJAX request to ```http://<IP Server>:<Port>/api/<endpoint>``` throught dataContainer decorator:
 
 ```javascript
-MyComponent.defaultProps = {
+@dataContainer({
   endpoint: 'system'
-}
+})
 ```
 
 The response data will be pushed to state so that UI can change whenever state changes.
@@ -70,7 +67,7 @@ The response data will be pushed to state so that UI can change whenever state c
 In case you want to add some query params, just change the endpoint fragment:
 
 ```javascript
-MyComponent.defaultProps = {
+@dataContainer({
   endpoint: {
     name: 'system',
     initialVariables: () => {
@@ -80,27 +77,27 @@ MyComponent.defaultProps = {
       }
     }
   }
-}
+})
 ```
 
 If you want to do something with the response data before it's pushed to state, just add the resolve function like below:
 
 ```javascript
-MyComponent.defaultProps = {
+@dataContainer({
   endpoint: 'master-data/card',
   resolve: response => {
     // Do something with response before return
     return response
   }
-}
+})
 ```
 
 ## Mutations
 
-Add mutations fragment into defaultProps, type can be MutationType.POST, MutationType.PUT, MutationType.DELETE.
+Add mutations fragment into dataContainer decorator, type can be MutationType.POST, MutationType.PUT, MutationType.DELETE.
 
 ```javascript
-MyComponent.defaultProps = {
+@dataContainer({
   endpoint: 'system',
   mutations: {
     login: {
@@ -108,7 +105,7 @@ MyComponent.defaultProps = {
       path: 'security/login'
     }
   }
-}
+})
 ```
 
 As you can see from above, we add ```login``` to mutations fragment as a POST request and it will call to ```http://<IP Server>:<Port>/api/security/login```
@@ -147,7 +144,7 @@ We pass an object as a parameter into login function with the format:
 You can register a handler to be called when Ajax requests complete (with an error):
 
 ```javascript
-import { Xhr } from 'rc-lazy'
+import { Xhr } from 'rc-model'
 
 Xhr.ajaxComplete = () => {
   console.log('Ajax Complete')
