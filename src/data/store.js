@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Xhr from './../ajax/xhr'
-import Map from './map'
+import Map from './../core/map'
 
 const store = (config) => (WrappedComponent) => class extends Component {
   constructor(props) {
