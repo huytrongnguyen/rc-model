@@ -23,7 +23,7 @@ Create a React component with store decorator:
 
 ```javascript
 import React, { Component } from 'react'
-import { Xhr, MutationType, Store } from 'rc-model'
+import { Xhr, MutationType, store } from 'rc-model'
 
 Xhr.BASE_URL = '/api'
 
@@ -31,11 +31,6 @@ Xhr.BASE_URL = '/api'
   endpoint: 'system'
 })
 class MyComponent extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { TestData: [] }
-  }
-
   render() {
     const { TestData } = this.props.store.data
     return <div>
@@ -79,7 +74,7 @@ If you want to do something with the response data before it's pushed to props, 
 
 ```javascript
 @store({
-  endpoint: 'master-data/card',
+  endpoint: 'system',
   done: response => {
     // Do something with response before return
     return response
@@ -146,17 +141,7 @@ Xhr.ajaxComplete = () => {
 }
 
 Xhr.ajaxError = (error) => {
-  console.error(error.type, ':', error.message)
-  if (error.trace) {
-    console.error(error.trace)
-  }
-  const notification = `<div class="alert alert-danger" role="alert">
-    <strong>${error.type}!</strong> ${error.message}
-  </div>`
-  document.getElementById('notify').innerHTML = notification
-  window.setTimeout(() => {
-    document.getElementById('notify').innerHTML = ''
-  }, 2000)
+  console.log('Ajax Error!!!')
 }
 ```
 
