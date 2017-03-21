@@ -5,6 +5,5 @@
  */
 
 export { default as Xhr } from './ajax/xhr'
-export { MutationType } from './data/store'
+export { MutationType } from './ajax/xhr'
 export { default as Store } from './data/store'
-export { default as dataContainer } from './data/container'

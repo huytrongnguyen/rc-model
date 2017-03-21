@@ -1,7 +1,14 @@
 import String from './../core/string'
 
+export const MutationType = {
+  POST: 'post',
+  PUT: 'put',
+  DELETE: 'delete'
+};
+
 class Xhr {
   constructor() {
+    this.BASE_URL = null
     this.xhr = new XMLHttpRequest()
     this.ajaxComplete = function() { /* to be implemented */ }
     this.ajaxError = function(error) { /* to be implemented */ }
@@ -38,6 +45,9 @@ class Xhr {
   request(settings, done) {
     let xhr = this.xhr
     let { url, method, params } = settings
+    if (this.BASE_URL) {
+      url = `${this.BASE_URL}/${url}`
+    }
     if (method === 'get' && params !== null) {
       url = `${url}?${String.toQueryString(params)}`
     }

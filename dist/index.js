@@ -12,28 +12,19 @@ Object.defineProperty(exports, 'Xhr', {
     return _interopRequireDefault(_xhr).default;
   }
 });
-
-var _store = require('./data/store');
-
 Object.defineProperty(exports, 'MutationType', {
   enumerable: true,
   get: function get() {
-    return _store.MutationType;
+    return _xhr.MutationType;
   }
 });
+
+var _store = require('./data/store');
+
 Object.defineProperty(exports, 'Store', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_store).default;
-  }
-});
-
-var _container = require('./data/container');
-
-Object.defineProperty(exports, 'dataContainer', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_container).default;
   }
 });
 
