@@ -16,7 +16,7 @@ var _xhr = require('./../ajax/xhr');
 
 var _xhr2 = _interopRequireDefault(_xhr);
 
-var _map = require('./map');
+var _map = require('./../core/map');
 
 var _map2 = _interopRequireDefault(_map);
 
