@@ -53,10 +53,10 @@ var store = function store(config) {
         value: function componentWillMount() {
           var _this2 = this;
 
-          var store = this.props.store;
+          var store = this.state.store;
 
           _map2.default.of(config.mutations).each(function (name, mutator) {
-            relay[name] = function (options) {
+            store[name] = function (options) {
               return _this2.commitUpdate(mutator, options);
             };
           });
@@ -65,7 +65,8 @@ var store = function store(config) {
         key: 'componentDidMount',
         value: function () {
           var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee() {
-            var endpoint, params, response, done, fail;
+            var endpoint, params, response, done, fail, _store;
+
             return regeneratorRuntime.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
@@ -91,10 +92,11 @@ var store = function store(config) {
                     done = config.done, fail = config.fail;
 
                     if (response) {
+                      _store = this.state.store;
 
-                      store.data = done ? done(response) : response;
+                      _store.data = done ? done(response) : response;
                       this.setState(function () {
-                        return { store: store };
+                        return { store: _store };
                       });
                     } else if (fail) {
                       fail();
@@ -154,7 +156,7 @@ var store = function store(config) {
       }, {
         key: 'render',
         value: function render() {
-          var data = this.state.data;
+          var store = this.state.store;
 
           return _react2.default.createElement(WrappedComponent, _extends({}, this.props, { store: store }));
         }

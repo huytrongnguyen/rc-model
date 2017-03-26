@@ -13,9 +13,9 @@ const store = (config) => (WrappedComponent) => class extends Component {
   }
 
   componentWillMount() {
-    const { store } = this.props
+    const { store } = this.state
     Map.of(config.mutations).each((name, mutator) => {
-      relay[name] = options => this.commitUpdate(mutator, options)
+      store[name] = options => this.commitUpdate(mutator, options)
     })
   }
 
@@ -29,7 +29,7 @@ const store = (config) => (WrappedComponent) => class extends Component {
     const response = await Xhr.ajax(this.getRelativeUrl(endpoint), 'GET', params)
     const { done, fail } = config
     if (response) {
-
+      const { store } = this.state
       store.data = done ? done(response) : response
       this.setState(() => ({ store }))
     } else if (fail) {
@@ -49,7 +49,7 @@ const store = (config) => (WrappedComponent) => class extends Component {
   }
 
   render() {
-    const { data } = this.state;
+    const { store } = this.state;
     return <WrappedComponent {...this.props} store={store} />
   }
 }
