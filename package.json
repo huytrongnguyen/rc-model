@@ -1,6 +1,6 @@
 {
   "name": "rc-model",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A JAVASCRIPT LIBRARY FOR BUILDING DATA-DRIVEN REACT APPLICATIONS",
   "main": "dist/index.js",
   "author": "Lionel Nguyen <huytrongnguyen@kms-technology.com>",
