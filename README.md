@@ -19,15 +19,15 @@ You'll need both React and React Model:
 
 ## Containers
 
-Create a React component with store decorator:
+Create a React component with ```Store``` decorator:
 
 ```javascript
 import React, { Component } from 'react'
-import { Xhr, MutationType, store } from 'rc-model'
+import { Xhr, MutationType, Store } from 'rc-model'
 
 Xhr.BASE_URL = '/api'
 
-@store({
+@Store({
   endpoint: 'system'
 })
 class MyComponent extends Component {
@@ -44,10 +44,10 @@ export default MyComponent
 
 You can setup network layer throught Xhr.BASE_URL. In this case, when you setup ```Xhr.BASE_URL = '/api'```, every AJAX requests will call to ```http://<IP Server>:<Port>/api/```
 
-You need to setup the endpoint to make an AJAX request to ```http://<IP Server>:<Port>/api/<endpoint>``` throught ```store``` decorator:
+You need to setup the endpoint to make an AJAX request to ```http://<IP Server>:<Port>/api/<endpoint>``` throught ```Container``` decorator:
 
 ```javascript
-@store({
+@Store({
   endpoint: 'system'
 })
 ```
@@ -57,7 +57,7 @@ The response data will be pushed to ```this.props.store.data```.
 In case you want to add some query params, just change the endpoint fragment:
 
 ```javascript
-@store({
+@Store({
   endpoint: {
     name: 'system',
     initialVariables: () => {
@@ -70,12 +70,12 @@ In case you want to add some query params, just change the endpoint fragment:
 })
 ```
 
-If you want to do something with the response data before it's pushed to props, just add the ```done``` function like below:
+If you want to do something with the response data before it's pushed to props, just add the ```next``` function like below:
 
 ```javascript
-@store({
+@Store({
   endpoint: 'system',
-  done: response => {
+  next: response => {
     // Do something with response before return
     return response
   }
@@ -84,10 +84,10 @@ If you want to do something with the response data before it's pushed to props, 
 
 ## Mutations
 
-Add mutations fragment into dataContainer decorator, type can be MutationType.POST, MutationType.PUT, MutationType.DELETE.
+Add mutations fragment into ```Container``` decorator, type can be MutationType.POST, MutationType.PUT, MutationType.DELETE.
 
 ```javascript
-@store({
+@Store({
   endpoint: 'system',
   mutations: {
     login: {
@@ -99,8 +99,7 @@ Add mutations fragment into dataContainer decorator, type can be MutationType.PO
 ```
 
 As you can see from above, we add ```login``` to mutations fragment as a POST request and it will call to ```http://<IP Server>:<Port>/api/security/login```
-Then you can call ```login``` as a function and add the ```record```, ```done``` and ```fail``` function like this:
-Here's an example of this mutation in use:
+Then you can call ```login``` as a function like this:
 
 ```javascript
   handleLogin() {
@@ -109,10 +108,10 @@ Here's an example of this mutation in use:
         Id: "my_id",
         Password: "my_password"
       },
-      done: response => {
+      next: response => {
         console.log(response)
       },
-      fail: () => {
+      error: () => {
         console.error('Error!!!')
       }
     })
@@ -124,8 +123,9 @@ We pass an object as a parameter into login function with the format:
 ```javascript
 {
   record:  { ... }, // data to be sent to the server
-  done: response => { ... }, // a function to be called if the request succeeds.
-  fail: response => { ... } // a function to be called if the request fails.
+  next: response => { ... }, // a function to be called if the request succeeds.
+  error: response => { ... } // a function to be called if the request fails.
+  complete: response => { ... } // a function to be called if the request fails.
 }
 ```
 
@@ -136,12 +136,16 @@ You can register a handler to be called when Ajax requests complete (with an err
 ```javascript
 import { Xhr } from 'rc-model'
 
-Xhr.ajaxComplete = () => {
-  console.log('Ajax Complete')
+Xhr.ajaxBefore = () => {
+  console.log('Ajax Before')
 }
 
 Xhr.ajaxError = (error) => {
   console.log('Ajax Error!!!')
+}
+
+Xhr.ajaxComplete = () => {
+  console.log('Ajax Complete')
 }
 ```
 

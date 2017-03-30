@@ -6,4 +6,4 @@
 
 export { default as Xhr } from './ajax/xhr'
 export { MutationType } from './ajax/xhr'
-export { default as Store } from './data/store'
+export { default as Store } from './decorator/store'

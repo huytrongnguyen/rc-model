@@ -19,7 +19,7 @@ Object.defineProperty(exports, 'MutationType', {
   }
 });
 
-var _store = require('./data/store');
+var _store = require('./decorator/store');
 
 Object.defineProperty(exports, 'Store', {
   enumerable: true,

@@ -10,23 +10,22 @@ class Xhr {
   constructor() {
     this.BASE_URL = null
     this.xhr = new XMLHttpRequest()
-    this.ajaxComplete = function() { /* to be implemented */ }
-    this.ajaxError = function(error) { /* to be implemented */ }
+    this.ajaxBefore = () => { /* to be implemented */ }
+    this.ajaxError = (error) => { /* to be implemented */ }
+    this.ajaxComplete = () => { /* to be implemented */ }
   }
 
-  async ajax(url, method, params) {
+  async ajax({ url, method = 'GET', record, next, error, complete }) {
     try {
-      const response = await this.promise({ url, method, params })
-      if (response.error) {
-        this.ajaxError(response.error)
-        return null
-      }
-      this.ajaxComplete()
-      return response
+      this.ajaxBefore()
+      const response = await this.promise({ url, method, record })
+      next && next(response)
     } catch (e) {
-      console.error(e)
       this.ajaxError(e)
-      return null
+      error && error(e)
+    } finally {
+      this.ajaxComplete()
+      complete && complete()
     }
   }
 
@@ -42,28 +41,30 @@ class Xhr {
     })
   }
 
-  request(settings, done) {
-    let xhr = this.xhr
-    let { url, method, params } = settings
+  request({ url, method, record }, done) {
     if (this.BASE_URL) {
       url = `${this.BASE_URL}/${url}`
     }
-    if (method === 'get' && params !== null) {
-      url = `${url}?${String.toQueryString(params)}`
+    if (method === 'get' && record !== null) {
+      url = `${url}?${String.toQueryString(record)}`
     }
+    const xhr = this.xhr
     xhr.open(method, url, true)
     xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8')
     xhr.onreadystatechange = () => {
-      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        try {
+      if(xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
           done(null, JSON.parse(xhr.responseText))
-        } catch (e) {
-          done(null, xhr.responseText)
+        } else {
+          try {
+            done(JSON.parse(xhr.responseText))
+          } catch (e) {
+            done(xhr.responseText)
+          }
         }
-
       }
     }
-    xhr.send(params !== null ? JSON.stringify(params) : null)
+    xhr.send(record !== null ? JSON.stringify(record) : null)
   }
 }
 
